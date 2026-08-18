@@ -1,0 +1,18 @@
+node_modules
+.next
+out
+.api-parked
+.env
+.env.local
+*.tsbuildinfo
+
+# Fotos de teste: nao versionar (direitos de imagem de terceiros).
+public/samples/
+
+# Artefatos de build, recriados por `npm run setup:model` — tanto no seu
+# computador quanto na CI, antes de gerar o site. O site publicado serve
+# todos eles do proprio dominio; o que nao faz sentido e versionar 65 MB
+# de binario que um comando reproduz.
+public/models/
+public/ort/
+public/vendor/
