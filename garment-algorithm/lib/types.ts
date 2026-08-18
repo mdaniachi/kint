@@ -46,9 +46,14 @@ export interface EffectParameters {
   /** Character colour relative to the garment. */
   ink: InkMode;
   /**
-   * "auto" follows the ink direction (light characters on dark garments,
-   * dark on light). Any CSS colour overrides it without changing where the
+   * Any CSS colour, or "auto" to follow the ink direction (light characters
+   * on dark garments, dark on light). Colour never changes *where* the
    * characters go — direction and colour are separate decisions.
+   *
+   * The default is white rather than "auto": white reads on both a dark
+   * garment (characters in its highlights) and a light one (characters in
+   * its shadows), because direction still adapts underneath. "auto" turning
+   * the treatment black on a pale garment was surprising, not useful.
    */
   inkColor: string;
 }
@@ -64,7 +69,7 @@ export const DEFAULT_PARAMS: EffectParameters = {
   opacity: 100,
   charset: "#+=-:.",
   ink: "auto",
-  inkColor: "auto"
+  inkColor: "#f6f5f1"
 };
 
 /**

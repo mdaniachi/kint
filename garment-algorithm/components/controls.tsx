@@ -361,7 +361,7 @@ export function EffectControls({
                   : "border-ink-line text-fg-low hover:text-fg-mid"
               ].join(" ")}
             >
-              Auto
+              Match garment
             </button>
             <label
               className={[
@@ -382,7 +382,8 @@ export function EffectControls({
             </label>
           </div>
           <span className="mt-1 block text-[10px] leading-relaxed text-fg-low">
-            A colour here overrides Auto without moving the characters.
+            White by default. &ldquo;Match garment&rdquo; flips to dark ink on
+            pale garments. Neither moves a character.
           </span>
         </div>
         <label className="block">
