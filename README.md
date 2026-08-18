@@ -23,7 +23,7 @@ KINT/
 
 | Pasta | O que é | Status |
 |---|---|---|
-| [`garment-algorithm/`](garment-algorithm/) | MVP completo: segmentação via Hugging Face, máscara refinável a pincel, efeito ASCII Reconstruction, export em resolução original | fonte de verdade |
+| [`garment-algorithm/`](garment-algorithm/) | **KINT STUDIO** — app completo: segmentação via Hugging Face, máscara refinável a pincel, efeito ASCII Reconstruction, export em resolução original | fonte de verdade |
 | [`prototypes/`](prototypes/) | `garment-algorithm-inchat.jsx` — protótipo de arquivo único, sem credenciais, seleção por varinha (flood fill) | referência |
 
 ## Publicação

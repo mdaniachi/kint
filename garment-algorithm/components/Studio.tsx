@@ -21,6 +21,7 @@ import {
 import { hashString } from "@/lib/analysis";
 import { renderComposite, type EffectTarget } from "@/lib/compose";
 import { recordWebM } from "@/lib/video";
+import { APP_NAME, FILE_SLUG } from "@/lib/brand";
 import {
   preloadSegmenter,
   segmentImage,
@@ -357,8 +358,8 @@ export default function Studio() {
                 a.href = URL.createObjectURL(blob);
                 a.download =
                   fmt === "layer"
-                    ? "garment-algorithm-layer.png"
-                    : `garment-algorithm.${fmt}`;
+                    ? `${FILE_SLUG}-layer.png`
+                    : `${FILE_SLUG}.${fmt}`;
                 a.click();
                 URL.revokeObjectURL(a.href);
               }
@@ -406,7 +407,7 @@ export default function Studio() {
       .then((blob) => {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "garment-algorithm.webm";
+        a.download = `${FILE_SLUG}.webm`;
         a.click();
         URL.revokeObjectURL(a.href);
       })
@@ -434,7 +435,7 @@ export default function Studio() {
       {/* Header */}
       <header className="flex h-12 shrink-0 items-center justify-between border-b border-ink-line px-4">
         <h1 className="text-[12px] uppercase tracking-[0.28em] text-fg-hi">
-          Garment Algorithm
+          {APP_NAME}
         </h1>
         <div className="flex items-center gap-2">
           {fullImage && (

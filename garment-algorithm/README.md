@@ -1,4 +1,4 @@
-# Garment Algorithm — MVP
+# KINT STUDIO
 
 A web-based creative tool: upload a fashion photograph, the app detects the garments, you click one, and an algorithmic treatment is rendered strictly inside that garment's mask. Every pixel outside the mask comes directly from the original photograph. Four treatments ship — ASCII Reconstruction, Halftone, Contour Lines, Scanline — and every garment carries its own effect and settings.
 
@@ -114,6 +114,8 @@ from the app.
 app/
   page.tsx                     entry
   api/segment/route.ts         segmentation provider (Hugging Face) — swappable
+lib/
+  brand.ts                     product name + export filename slug
 components/
   Studio.tsx                   state orchestration, layout, export
   CanvasStage.tsx              display canvas, hover/select hit testing, brush painting

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Garment Algorithm",
-  description:
-    "Upload a fashion photograph, select a garment, and apply an algorithmic treatment inside it — the rest of the image stays untouched."
+  title: APP_NAME,
+  description: APP_DESCRIPTION
 };
 
 export default function RootLayout({
