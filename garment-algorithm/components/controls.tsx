@@ -1,7 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { EffectParameters, Garment, GarmentSettings } from "@/lib/types";
 import { effects } from "@/lib/effects";
+import {
+  BUILTIN_PRESETS,
+  deleteCustomPreset,
+  loadCustomPresets,
+  presetNameFor,
+  saveCustomPreset,
+  type CharsetPreset
+} from "@/lib/charsetPresets";
 
 /* ── Slider ─────────────────────────────────────────────────────────── */
 
@@ -171,6 +180,165 @@ export function GarmentList({
         </button>
       </div>
     </aside>
+  );
+}
+
+/* ── Character set + presets ────────────────────────────────────────── */
+
+function CharsetField({
+  value,
+  onChange
+}: {
+  value: string;
+  onChange: (charset: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [custom, setCustom] = useState<CharsetPreset[]>([]);
+  const [naming, setNaming] = useState(false);
+  const [draftName, setDraftName] = useState("");
+
+  // localStorage is not available while rendering on the server.
+  useEffect(() => setCustom(loadCustomPresets()), []);
+
+  const current = presetNameFor(value, custom);
+  const isSaved = current !== null;
+
+  const commitSave = () => {
+    const name = draftName.trim();
+    if (!name) return;
+    setCustom(saveCustomPreset({ name, charset: value }));
+    setDraftName("");
+    setNaming(false);
+  };
+
+  return (
+    <div>
+      <span className="mb-1 block text-[11px] uppercase tracking-[0.12em] text-fg-mid">
+        Character set
+      </span>
+
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 border border-ink-line bg-ink-0 px-2 py-1.5 text-left transition-colors hover:border-fg-low"
+      >
+        <span className="truncate text-[13px] tracking-[0.2em] text-fg-hi">
+          {value || "—"}
+        </span>
+        <span className="shrink-0 text-[10px] text-fg-low">
+          {current ?? "Custom"} {open ? "▴" : "▾"}
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-1 border border-ink-line">
+          {BUILTIN_PRESETS.map((p) => (
+            <button
+              key={p.name}
+              type="button"
+              onClick={() => onChange(p.charset)}
+              className={[
+                "flex w-full items-center justify-between gap-2 px-2 py-1.5 text-left transition-colors",
+                p.charset === value
+                  ? "bg-fg-low/20 text-fg-hi"
+                  : "text-fg-mid hover:bg-ink-2 hover:text-fg-hi"
+              ].join(" ")}
+            >
+              <span className="text-[11px]">{p.name}</span>
+              <span className="truncate text-[12px] tracking-[0.16em] text-fg-low">
+                {p.charset}
+              </span>
+            </button>
+          ))}
+
+          {custom.length > 0 && (
+            <div className="border-t border-ink-line">
+              <div className="px-2 pb-0.5 pt-1.5 text-[10px] uppercase tracking-[0.12em] text-fg-low">
+                Saved
+              </div>
+              {custom.map((p) => (
+                <div
+                  key={p.name}
+                  className={[
+                    "flex items-center gap-1 pr-1 transition-colors",
+                    p.charset === value ? "bg-fg-low/20" : "hover:bg-ink-2"
+                  ].join(" ")}
+                >
+                  <button
+                    type="button"
+                    onClick={() => onChange(p.charset)}
+                    className="flex min-w-0 flex-1 items-center justify-between gap-2 px-2 py-1.5 text-left"
+                  >
+                    <span className="truncate text-[11px] text-fg-mid">
+                      {p.name}
+                    </span>
+                    <span className="truncate text-[12px] tracking-[0.16em] text-fg-low">
+                      {p.charset}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCustom(deleteCustomPreset(p.name))}
+                    aria-label={`Delete preset ${p.name}`}
+                    className="px-1 text-[11px] text-fg-low transition-colors hover:text-fg-hi"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="border-t border-ink-line p-1.5">
+            {naming ? (
+              <div className="flex gap-1">
+                <input
+                  autoFocus
+                  value={draftName}
+                  placeholder="Preset name"
+                  spellCheck={false}
+                  onChange={(e) => setDraftName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") commitSave();
+                    if (e.key === "Escape") setNaming(false);
+                  }}
+                  className="min-w-0 flex-1 border border-ink-line bg-ink-0 px-1.5 py-1 text-[11px] text-fg-hi outline-none focus:border-fg-low"
+                />
+                <button
+                  type="button"
+                  onClick={commitSave}
+                  className="border border-ink-line-hi px-2 text-[11px] text-fg-mid transition-colors hover:text-fg-hi"
+                >
+                  Save
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setNaming(true)}
+                disabled={isSaved || !value.trim()}
+                className="w-full px-2 py-1 text-left text-[11px] text-fg-low transition-colors enabled:hover:text-fg-hi disabled:opacity-40"
+              >
+                {isSaved ? "Already a preset" : "+ Save current as preset"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <input
+        type="text"
+        value={value}
+        spellCheck={false}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full border border-ink-line bg-ink-0 px-2 py-1.5 text-[13px] tracking-[0.2em] text-fg-hi outline-none transition-colors focus:border-fg-low"
+        aria-label="Character set, dense to light"
+      />
+      <span className="mt-1 block text-[10px] text-fg-low">
+        Ordered dense → light. Type freely to build one from scratch.
+      </span>
+    </div>
   );
 }
 
@@ -386,22 +554,10 @@ export function EffectControls({
             pale garments. Neither moves a character.
           </span>
         </div>
-        <label className="block">
-          <span className="mb-1 block text-[11px] uppercase tracking-[0.12em] text-fg-mid">
-            Character set
-          </span>
-          <input
-            type="text"
-            value={params.charset}
-            spellCheck={false}
-            onChange={(e) => onChange({ charset: e.target.value })}
-            className="w-full border border-ink-line bg-ink-0 px-2 py-1.5 text-[13px] tracking-[0.2em] text-fg-hi outline-none transition-colors focus:border-fg-low"
-            aria-label="Character set, dense to light"
-          />
-          <span className="mt-1 block text-[10px] text-fg-low">
-            Ordered dense → light
-          </span>
-        </label>
+        <CharsetField
+          value={params.charset}
+          onChange={(charset) => onChange({ charset })}
+        />
       </div>
 
     </aside>

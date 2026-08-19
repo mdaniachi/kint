@@ -64,7 +64,13 @@ export const asciiReconstruction: GarmentEffect = {
     ctx.textBaseline = "middle";
 
     // Advance width of the monospace cell: characters tile edge to edge.
-    const advance = ctx.measureText("#").width || fontSize * 0.6;
+    // Measured from the charset in use, not from a fixed "#": a glyph the
+    // system font lacks falls back to another face with its own advance,
+    // and a grid stepped by the wrong width overlaps or gaps. Taking the
+    // widest keeps every character inside its cell.
+    const advance =
+      chars.reduce((mx, ch) => Math.max(mx, ctx.measureText(ch).width), 0) ||
+      fontSize * 0.6;
     const cellW = Math.max(2, advance * 1.06);
     const cellH = Math.max(3, fontSize * 1.04);
 
